@@ -7,3 +7,11 @@ pubspec.lock
 
 # Directory created by dartdoc
 doc/api/
+.idea
+*.iml
+bin
+out
+packages
+.packages
+
+
