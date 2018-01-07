@@ -8,8 +8,17 @@ environment:
   sdk: '>=1.20.1 <2.0.0'
 
 dependencies:
+  dama:
+    git:
+      url: git://github.com/thumbert/dama.git
+  date:
+    git:
+      url: git://github.com/thumbert/date.git
   http: ^0.11.3+16
   plotly: ^0.7.3
+  timeseries:
+    git:
+      url: git://github.com/thumbert/timeseries.git
 
 dev_dependencies:
   browser: ^0.10.0
