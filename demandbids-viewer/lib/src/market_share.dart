@@ -17,22 +17,26 @@ class MarketShare {
   Map layout;
 
   MarketShare() {
-    start = new Date(
-      2017,
-      1,
-      1,
-    );
+    start = new Date(2017, 1, 1);
     end = new Date(2017, 9, 30);
     topN = 10;
     showStacked = false;
 
     layout = {
       'title': 'Demand bids by participant',
+      'xaxis': {
+        'showgrid': true,
+        'ticks': 'outside',
+        'showticklabels': true,
+      },
       'yaxis': {
+        'showgrid': true,
+//        'showline': true,
         'title': 'Total MWh by day',
       },
-      'width': 600,
-      'height': 500,
+      'hovermode': 'closest',
+      'width': 800,
+      'height': 700,
     };
   }
 
@@ -74,21 +78,12 @@ class MarketShare {
     return res;
   }
 
-
   /// make them time series for easier manipulations.
   Map<String, TimeSeries> _makeTimeSeries(Map<String, List<Map>> groupedData) {
-    List<Interval> days = new TimeIterable(start,end.add(1)).toList();
+    List<Interval> days = new TimeIterable(start, end.add(1)).toList();
     List zeros = new TimeSeries.from(days, new List.filled(days.length, 0));
-
-
-
   }
-
-
-
 }
-
-
 
 /// Return the data in this format
 /// [{"participantId": 985313, "date": "2017-09-29", "MWh": 847.2}, ...]
