@@ -10,7 +10,3 @@ doc/api/
 .idea
 *.iml
 out
-packages
-.packages
-
-
