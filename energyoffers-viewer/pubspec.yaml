@@ -11,9 +11,18 @@ dependencies:
   date:
     git:
       url: git://github.com/thumbert/date.git
+  elec:
+      git:
+        url: git://github.com/thumbert/elec.git
+  elec_server:
+    git:
+      url: git://github.com/thumbert/elec-server.git
   http: ^0.11.3+16
   path: ^1.4.1
   plotly: ^0.7.3
+  table:
+    git:
+      url: git://github.com/thumbert/table.git
   timeseries:
     git:
       url: git://github.com/thumbert/timeseries.git
@@ -28,6 +37,6 @@ transformers:
 
 # Uncomment the following in sdk 1.24+ to make pub serve
 # use dartdevc (webdev.dartlang.org/tools/dartdevc).
-web:
-  compiler:
-    debug: dartdevc
+#web:
+#  compiler:
+#    debug: dartdevc

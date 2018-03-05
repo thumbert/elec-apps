@@ -9,13 +9,18 @@
     <title>energyoffers_viewer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
-    <script defer src="main.dart" type="application/dart"></script>
-    <script defer src="packages/browser/dart.js"></script>
+
 </head>
 
 <body>
 
-  <div id="output"></div>
+    <div>
+        <div id="chart-stack"></div>
+    </div>
+    <div id="output"></div>
 
+    <script defer src="energyoffers_viewer.dart" type="application/dart"></script>
+    <script defer src="packages/browser/dart.js"></script>
+    <script defer src="packages/plotly/plotly-latest.min.js"></script>
 </body>
 </html>
