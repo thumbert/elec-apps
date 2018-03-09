@@ -93,7 +93,7 @@ Map marginalUnit(Iterable<Map> stack, num demand) {
 /// Calculate the hourly clearing prices for a time interval.
 /// Use the function [stackModifier] to modify the stack, e.g. remove or
 /// add a unit.
-/// Return a List of Map {'hourBeginning', 'estimated LMP', 'marginalUnitId'}
+/// Return a List of Map {'hourBeginning', 'estimatedLmp', 'marginalUnitId'}
 Future<List<Map>> calculateClearingPrice(Interval interval, Client client,
     {Function stackModifier}) async {
   stackModifier ??= (x) => x;
@@ -109,7 +109,7 @@ Future<List<Map>> calculateClearingPrice(Interval interval, Client client,
     var mu = marginalUnit(stack, demand.value);
     res.add({
       'hourBeginning': hour.start,
-      'estimatedLMP': mu['price'],
+      'lmp': mu['price'],
       'marginalUnitId': mu['assetId']
     });
   }

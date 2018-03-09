@@ -24,11 +24,6 @@ class StackViewer {
     layout = {
       'title': 'Energy offer stack',
 //      'autosize': false,
-//      'margin': {
-//        'l': 200,
-//        'r': 100,
-//        'pad': 10,
-//      },
       'xaxis': {
         //'showline': true,
         'showgrid': true,
@@ -47,8 +42,8 @@ class StackViewer {
         'title': 'Offer price, \$/Mwh',
       },
       'hovermode': 'closest',
-      'width': 800,
-      'height': 700,
+      'width': 500,
+      'height': 400,
     };
 
   }
@@ -64,9 +59,11 @@ class StackViewer {
   List _makeTrace(List offerData) {
     List x = [];
     List y = [];
+    num cumQty = 0;
     offerData.forEach((e) {
-      x.add(e['cumulative qty']);
+      x.add(e['quantity'] + cumQty);
       y.add(e['price']);
+      cumQty += e['quantity'];
     });
     return [{
       'x': x,
