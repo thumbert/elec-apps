@@ -8,6 +8,7 @@ import 'package:http/browser_client.dart';
 import 'package:plotly/plotly.dart';
 import 'package:timezone/browser.dart';
 import 'package:energyoffers_viewer/src/clearing_price.dart';
+import 'package:energyoffers_viewer/src/lib_data.dart';
 
 class LmpViewer {
   Interval interval;

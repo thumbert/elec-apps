@@ -7,7 +7,8 @@ import 'package:timezone/standalone.dart';
 import 'package:date/date.dart';
 import 'package:table/table.dart';
 import 'package:elec_server/src/utils/timezone_utils.dart';
-import 'package:energyoffers_viewer/src/clearing_price.dart';
+import 'package:energyoffers_viewer/src/scenario.dart';
+import 'package:energyoffers_viewer/src/lib_data.dart';
 
 getStackTest() async {
   group('Test stack and clearing price:', () {
@@ -15,24 +16,17 @@ getStackTest() async {
     Client client = new Client();
 
     test('get stack middle of day', () async {
-      TZDateTime dt = new TZDateTime(location, 2017, 7, 1, 15);
-      List<Map> stack = await getStack(dt, client);
+      TZDateTime end = new TZDateTime(location, 2017, 7, 1, 16);
+      List<Map> stack = await getStack(new Hour.ending(end), client);
       //stack.forEach(print);
-      Map mu = marginalUnit(stack, 17841);
+      Map mu = marginalUnit(stack, 17841, 0);
       //print(mu);
-    });
-
-    test('get stack last hour of day', () async {
-      TZDateTime dt = new TZDateTime(location, 2017, 7, 1, 16);
-      List<Map> stack = await getStack(dt, client);
-      //stack.forEach(print);
-      Map mu = marginalUnit(stack, 17841);
-      print(mu);
     });
 
     test('clear one day', () async {
       Date date = new Date(2017, 7, 1, location: location);
-      List cp = await calculateClearingPrice(date, client);
+      Scenario base = await makeBaseScenario(date, client);
+      List cp = base.calculateClearingPrice();
       //cp.forEach(print);
     });
   });
@@ -70,19 +64,19 @@ monthlyBenchmarkTest() async {
   Client client = new Client();
   Month month = new Month(2017, 7, location: location);
 
-  var p0 = await monthlyBenchmark(month, client);
+  //var p0 = await monthlyBenchmark(month, client);
 
 
   print('Without asset 91063:');
-  var p1 = await monthlyBenchmark(month, client,
-      stackModifier: (Iterable<Map> e) =>
-          e.where((x) => x['assetId'] != 91063).toList());
+//  var p1 = await monthlyBenchmark(month, client,
+//      stackModifier: (Iterable<Map> e) =>
+//          e.where((x) => x['assetId'] != 91063).toList());
 }
 
 main() async {
   initializeTimeZoneSync(getLocationTzdb());
 
-  //await getStackTest();
+  await getStackTest();
 
-  await monthlyBenchmarkTest();
+//  await monthlyBenchmarkTest();
 }
