@@ -7,7 +7,9 @@ import 'package:date/date.dart';
 import 'package:http/browser_client.dart';
 import 'package:plotly/plotly.dart';
 import 'package:timezone/browser.dart';
-import 'package:energyoffers_viewer/src/clearing_price.dart';
+import 'package:timeseries/timeseries.dart';
+import 'package:energyoffers_viewer/src/scenario.dart';
+import 'package:energyoffers_viewer/src/stack.dart';
 import 'package:energyoffers_viewer/src/lib_data.dart';
 
 class LmpViewer {
@@ -17,6 +19,8 @@ class LmpViewer {
   Plot plot;
   BrowserClient client;
   Location location;
+
+  Scenario baseScenario;
 
   LmpViewer() {
     location = getLocation('US/Eastern');
@@ -32,26 +36,46 @@ class LmpViewer {
     plot = new Plot.id('chart-lmp', [traceLmpActual], layout);
     html.querySelector('#output').text = 'Clearing the market ...';
 
-    var futLmpEstimated = calculateClearingPrice(interval, client);
-    futLmpEstimated.then((lmpEstimated) {
+    makeBaseScenario(interval, client).then((_baseScenario){
+      baseScenario = _baseScenario;
+      var lmpEstimated = baseScenario.calculateClearingPrice();
       Map traceLmpEstimated =
-          _makeTrace(lmpEstimated, other: {'name': 'estimated'});
+      _makeTrace(lmpEstimated, other: {'name': 'estimated'});
       plot.addTrace(traceLmpEstimated);
       html.querySelector('#output').text = '';
+
+      addPilgrimTrace();
+      addTowanticTrace();
     });
 
-    Function pilgrimOut =
-        (Iterable<Map> e) => e.where((x) => x['assetId'] != 91063).toList();
-    var futScenarioPilgrim = calculateClearingPrice(interval, client,
-        stackModifier: pilgrimOut);
-    futScenarioPilgrim.then((lmpEstimated) {
-      Map traceLmpEstimated =
-          _makeTrace(lmpEstimated, other: {'name': 'Pilgrim out'});
-      plot.addTrace(traceLmpEstimated);
-      html.querySelector('#output').text = '';
-    });
   }
+
+  addPilgrimTrace() {
+    TimeSeries pilgrimOutStack = new TimeSeries.from(
+        baseScenario.stack.intervals,
+        baseScenario.stack.values.map(pilgrimOut));
+    var pilgrimOutScenario = new Scenario(pilgrimOutStack, baseScenario.demand,
+        baseScenario.imports);
+    var lmp = pilgrimOutScenario.calculateClearingPrice();
+    plot.addTrace(_makeTrace(lmp, other: {'name': 'Pilgrim out'}));
+    html.querySelector('#output').text = '';
+  }
+
+  addTowanticTrace() {
+    TimeSeries towanticInStack = new TimeSeries.from(
+        baseScenario.stack.intervals,
+        baseScenario.stack.values.map(towanticIn));
+    var towanticScenario = new Scenario(towanticInStack, baseScenario.demand,
+        baseScenario.imports);
+    var lmp = towanticScenario.calculateClearingPrice();
+    plot.addTrace(_makeTrace(lmp, other: {'name': 'Towantic in'}));
+    html.querySelector('#output').text = '';
+  }
+
+
 }
+
+
 
 Map _makeTrace(List data, {Map other}) {
   other ??= {};

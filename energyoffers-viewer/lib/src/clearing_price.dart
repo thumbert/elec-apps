@@ -94,7 +94,7 @@ List<Map> monthlyAvgByBucket(List<Map> x) {
   var monthlyLmp = nest.map(x);
   //print(monthlyLmp);
 
-  return flattenMap(monthlyLmp);
+  return flattenMap(monthlyLmp, ['level0', 'level1']);
 }
 
 num _mean(Iterable<num> x) {
@@ -108,16 +108,16 @@ num _mean(Iterable<num> x) {
 }
 
 
-monthlyBenchmark(Month month, Client client, {Function stackModifier}) async {
-  var interval = new Date.fromTZDateTime(month.start);
-
-  /// estimated prices
-  List<Map> eLmp = await calculateClearingPrice(interval, client,
-      stackModifier: stackModifier);
-
-  var table = new Table.from(eLmp);
-  print(table.toCsv());
-
+//monthlyBenchmark(Month month, Client client, {Function stackModifier}) async {
+//  var interval = new Date.fromTZDateTime(month.start);
+//
+//  /// estimated prices
+//  List<Map> eLmp = await calculateClearingPrice(interval, client,
+//      stackModifier: stackModifier);
+//
+//  var table = new Table.from(eLmp);
+//  print(table.toCsv());
+//}
 
 
 //  var ts = new TimeSeries.fromIterable(eLmp.map((e) => new IntervalTuple(
@@ -141,8 +141,6 @@ monthlyBenchmark(Month month, Client client, {Function stackModifier}) async {
 //
 //  List res = monthlyAvgByBucket(lmp);
 //  res.forEach(print);
-
-}
 
 
 

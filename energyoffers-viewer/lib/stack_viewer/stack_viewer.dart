@@ -7,10 +7,10 @@ import 'package:date/date.dart';
 import 'package:http/browser_client.dart';
 import 'package:plotly/plotly.dart';
 import 'package:timezone/browser.dart';
-import 'package:energyoffers_viewer/src/clearing_price.dart';
+import 'package:energyoffers_viewer/src/lib_data.dart';
 
 class StackViewer {
-  DateTime hourBeginning;
+  Hour hour;
   Map layout;
   List offerData;
   Plot plot;
@@ -19,7 +19,7 @@ class StackViewer {
 
   StackViewer() {
     location = getLocation('US/Eastern');
-    hourBeginning = new TZDateTime(location, 2017, 7, 1, 16);
+    hour = new Hour.beginning(new TZDateTime(location, 2017, 7, 1, 16));
     client = new BrowserClient();
     layout = {
       'title': 'Energy offer stack',
@@ -49,7 +49,7 @@ class StackViewer {
   }
 
   show() async {
-    offerData ??= await getStack(hourBeginning, client);
+    offerData ??= await getStack(hour, client);
     offerData.take(5).forEach(print);
     List data = _makeTrace(offerData);
     plot = new Plot.id('chart-stack', data, layout);

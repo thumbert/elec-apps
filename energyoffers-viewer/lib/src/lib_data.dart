@@ -8,6 +8,7 @@ import 'package:timezone/timezone.dart';
 import 'package:timeseries/timeseries.dart';
 import 'package:elec_server/src/utils/iso_timestamp.dart';
 import 'scenario.dart';
+import 'stack.dart';
 
 Location _eastern = getLocation('US/Eastern');
 
@@ -36,12 +37,12 @@ Future<Scenario> makeBaseScenario(Interval interval, Client client) async {
 ///"quantity": 10.5,
 ///"cumulative qty": 10.5
 ///}, ...
-Future<List<Map>> getStack(Hour hour, Client client) async {
+Future<Stack> getStack(Hour hour, Client client) async {
   List stamp = toIsoHourEndingStamp(hour.start);
   var url =
       'http://localhost:8080/da_energy_offers/v1/stack/date/${stamp[0]}/hourending/${stamp[1]}';
   var response = await client.get(url);
-  return JSON.decode(response.body);
+  return new Stack.from(JSON.decode(response.body));
 }
 
 Future<List<Map>> getHourlyHubPrices(Interval interval, Client client) async {

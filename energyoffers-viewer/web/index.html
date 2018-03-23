@@ -9,14 +9,44 @@
     <title>energyoffers_viewer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
-
+    <script defer type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        background0color: #2196F3;
+        padding: 10px;
+    }
+    .th, .td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+
 
 <body>
 
     <div><div id="chart-lmp"></div></div>
     <div><div id="chart-stack"></div></div>
     <div id="output"></div>
+
+    <table id="price-table">
+        <tr>
+            <th>Scenario</th>
+            <th>5x16</th>
+            <th>2x16H</th>
+            <th>7x8</th>
+        </tr>
+        <tr>
+            <td>Actual</td>
+            <td id="actual-5x16"></td>
+            <td id="actual-2x16H"></td>
+            <td id="actual-5x8"></td>
+        </tr>
+    </table>
+
 
     <script defer src="energyoffers_viewer.dart" type="application/dart"></script>
     <script defer src="packages/browser/dart.js"></script>

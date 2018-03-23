@@ -6,9 +6,12 @@ import 'package:http/http.dart';
 import 'package:timezone/standalone.dart';
 import 'package:date/date.dart';
 import 'package:table/table.dart';
+import 'package:timeseries/timeseries.dart';
 import 'package:elec_server/src/utils/timezone_utils.dart';
 import 'package:energyoffers_viewer/src/scenario.dart';
 import 'package:energyoffers_viewer/src/lib_data.dart';
+import 'package:energyoffers_viewer/src/stack.dart';
+
 
 getStackTest() async {
   group('Test stack and clearing price:', () {
@@ -17,7 +20,7 @@ getStackTest() async {
 
     test('get stack middle of day', () async {
       TZDateTime end = new TZDateTime(location, 2017, 7, 1, 16);
-      List<Map> stack = await getStack(new Hour.ending(end), client);
+      var stack = await getStack(new Hour.ending(end), client);
       //stack.forEach(print);
       Map mu = marginalUnit(stack, 17841, 0);
       //print(mu);
@@ -27,7 +30,22 @@ getStackTest() async {
       Date date = new Date(2017, 7, 1, location: location);
       Scenario base = await makeBaseScenario(date, client);
       List cp = base.calculateClearingPrice();
-      //cp.forEach(print);
+//      print('Base prices:');
+//      cp.forEach(print);
+
+      var stack0 = base.stack.values.first;
+      print(stack0.length);
+      var stack1 = towanticIn(stack0);
+      print(stack1.length);
+
+//      TimeSeries newStack = new TimeSeries.from(
+//          base.stack.intervals,
+////          base.stack.values.map(pilgrimOut));
+//          base.stack.values.map(towanticIn));
+//      var scenario = new Scenario(newStack, base.demand,
+//          base.imports);
+//      var lmp = scenario.calculateClearingPrice();
+//      lmp.forEach(print);
     });
   });
 }

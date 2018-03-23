@@ -52,7 +52,7 @@ class Scenario {
 }
 
 
-/// Find the marginal unit in the stack.
+/// Find the marginal unit in the stack.  Assumes that the stack is ordered.
 Map marginalUnit(Stack stack, num demand, num imports) {
   Map res = {};
   num cumulativeQty = 0;

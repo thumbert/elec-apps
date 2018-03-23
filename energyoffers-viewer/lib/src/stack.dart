@@ -1,12 +1,16 @@
 library stack;
 
 import 'dart:collection';
-import 'package:date/date.dart';
+import 'package:more/ordering.dart';
 
 typedef Stack StackModifier(Stack stack);
 
+Ordering stackOrdering = getStackOrdering();
+
+
 class Stack extends ListBase<Map> {
   List<Map> _data;
+  Ordering ordering;
 
   /// The stack represents the energy offers of all the units at a given hour.
   /// Each offer block needs to contain at least:
@@ -23,9 +27,8 @@ class Stack extends ListBase<Map> {
   void set length(int i) {_data.length = i;}
   Map operator [](int i) => _data[i];
   operator []=(int i, Map offer) => _data[i] = offer;
+
 }
-
-
 
 
 
@@ -37,12 +40,25 @@ StackModifier pilgrimOut = (Stack stack) {
 
 /// Model Towantic as a bigger Kleen
 StackModifier towanticIn = (Stack stack) {
-  var kleen = stack.where((e) => e['assetId'] == 77459);
+  var newStack = new Stack.from(stack);
+  var kleen = newStack.where((e) => e['assetId'] == 77459);
   var towantic = kleen.map((e) {
-    e['assetId'] = 999991;
-    e['quantity'] = 1.27*e['quantity'];
-    return e;
+    var out = new Map.from(e);
+    out['assetId'] = 999991;
+    out['quantity'] = 1.27*e['quantity'];
+    return out;
   });
-  return new Stack.from(stack..addAll(towantic));
+  newStack.addAll(new List.from(towantic));
+  stackOrdering.sort(newStack);
+  return newStack;
 };
 
+
+
+/// How to order the stack.  Need this after you modify the stack.
+Ordering getStackOrdering() {
+  var natural = new Ordering.natural();
+  var byPrice = natural.onResultOf((Map e) => e['price']);
+  var byAssetId = natural.onResultOf((Map e) => e['assetId']);
+  return byPrice.compound(byAssetId);
+}
