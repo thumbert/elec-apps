@@ -6,6 +6,9 @@ import 'package:date/date.dart';
 import 'package:http/http.dart';
 import 'package:timezone/timezone.dart';
 import 'package:timeseries/timeseries.dart';
+import 'package:elec/src/iso/iso.dart';
+import 'package:elec/elec.dart';
+import 'package:table/table.dart';
 import 'package:elec_server/src/utils/iso_timestamp.dart';
 import 'scenario.dart';
 import 'stack.dart';
@@ -45,7 +48,9 @@ Future<Stack> getStack(Hour hour, Client client) async {
   return new Stack.from(JSON.decode(response.body));
 }
 
-Future<List<Map>> getHourlyHubPrices(Interval interval, Client client) async {
+/// Return the DAM hourly hub LMP price.
+Future<TimeSeries<num>> getHourlyHubPrices(
+    Interval interval, Client client) async {
   Date start =
       new Date(interval.start.year, interval.start.month, interval.start.day);
   Date end = new Date(interval.end.year, interval.end.month, interval.end.day)
@@ -53,7 +58,10 @@ Future<List<Map>> getHourlyHubPrices(Interval interval, Client client) async {
   var url =
       'http://localhost:8080/dalmp/v1/byrow/lmp/ptid/4000/start/${start.toString()}/end/${end.toString()}';
   var response = await client.get(url);
-  return JSON.decode(response.body);
+  var aux = JSON.decode(response.body);
+  return new TimeSeries.fromIterable(aux.map((Map e) => new IntervalTuple(
+      new Hour.beginning(TZDateTime.parse(_eastern, e['hourBeginning'])),
+      e['lmp'])));
 }
 
 /// Get the cleared demand for a time interval.  Usually, the interval should
@@ -74,4 +82,43 @@ Future<TimeSeries> getClearedDemand(Interval interval, Client client) async {
           e['Day-Ahead Cleared Demand']))
       .where((it) => interval.containsInterval(it.interval));
   return new TimeSeries.fromIterable(ts);
+}
+
+
+/// Calculate the monthly price by bucket.
+/// Input [x] is an hourly timeseries.
+Map monthlyAvgByBucket(TimeSeries x) {
+  List buckets = [
+    IsoNewEngland.bucket5x16,
+    IsoNewEngland.bucket2x16H,
+    IsoNewEngland.bucket7x8
+  ];
+
+  List<Map> data = [];
+  x.forEach((IntervalTuple e) {
+    data.add({
+      'month': new Month.fromTZDateTime(e.interval.start),
+      'bucket': buckets.firstWhere((bucket) => bucket.containsHour(e.interval)),
+      'value': e.value
+    });
+  });
+
+  Nest nest = new Nest()
+    ..key((Map e) => e['month'])
+    ..key((Map e) => e['bucket'])
+    ..rollup((Iterable x) => _mean(x.map((Map e) => e['value'])));
+
+  var monthlyLmp = nest.map(data);
+  return monthlyLmp;
+  //return flattenMap(monthlyLmp, ['month', 'bucket', 'price']);
+}
+
+num _mean(Iterable<num> x) {
+  int i = 0;
+  num res = 0;
+  x.forEach((e) {
+    res += e;
+    i++;
+  });
+  return res / i;
 }

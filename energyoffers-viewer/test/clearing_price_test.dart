@@ -82,6 +82,10 @@ monthlyBenchmarkTest() async {
   Client client = new Client();
   Month month = new Month(2017, 7, location: location);
 
+  var ts = await getHourlyHubPrices(month, client);
+  var avg = monthlyAvgByBucket(ts);
+
+
   //var p0 = await monthlyBenchmark(month, client);
 
 
@@ -96,5 +100,5 @@ main() async {
 
   await getStackTest();
 
-//  await monthlyBenchmarkTest();
+  await monthlyBenchmarkTest();
 }
