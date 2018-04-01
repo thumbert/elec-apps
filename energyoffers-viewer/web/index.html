@@ -12,31 +12,24 @@
     <script defer type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <style>
-    .grid-container {
-        display: grid;
-        grid-template-columns: auto auto auto auto;
-        background0color: #2196F3;
-        padding: 10px;
-    }
-    .th, .td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
     div.price_table {
         padding-left: 25px;
-        font-size: 15px;
+        font-size: 25px;
     }
 </style>
 
 
 <body>
+    <h3>Estimate DAM clearing under different scenarios</h3>
+    <div>
+        Month: <input type="text" id="month-input" value="Jun17">
+    </div>
 
     <div><div id="chart-lmp"></div></div>
     <div><div id="chart-stack"></div></div>
     <div id="output"></div>
-
-    <div id="price-table" class="price_table"></div>
+    <p></p>
+    <div id="price-table" class="price_table" style="font-size: 25px;"></div>
 
 
     <script defer src="energyoffers_viewer.dart" type="application/dart"></script>

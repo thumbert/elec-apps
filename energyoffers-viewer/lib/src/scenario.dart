@@ -32,7 +32,8 @@ class Scenario {
       throw new ArgumentError('Intervals of the input timeseries don\'t match');
   }
 
-  /// Calculate hourly clearing price
+  /// Calculate hourly clearing price.  Return a List of
+  /// {'hourBeginning': TZDateTime, 'lmp': num, 'marginalUnitId': int}
   List<Map> calculateClearingPrice() {
     List res = [];
     /// TODO: simple loop works after constructor guarantee

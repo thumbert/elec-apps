@@ -11,6 +11,10 @@ main() async {
   await initializeTimeZone();
   querySelector('#output').text = 'Your Dart app is running.';
   await Table.load();
+  // increase the table font because default is too small.
+  document.head.append(new StyleElement());
+  CssStyleSheet styleSheet = document.styleSheets.last;
+  styleSheet.insertRule('.google-visualization-table-table *  { font-size: 15px; }');
 
   var lmpViewer = new LmpViewer();
   await lmpViewer.show();

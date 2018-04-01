@@ -80,25 +80,22 @@ debugStack() async {
 monthlyBenchmarkTest() async {
   var location = getLocation('US/Eastern');
   Client client = new Client();
-  Month month = new Month(2017, 7, location: location);
+  Month month = new Month(2017, 6, location: location);
 
   var ts = await getHourlyHubPrices(month, client);
   var avg = monthlyAvgByBucket(ts);
-
-
-  //var p0 = await monthlyBenchmark(month, client);
-
-
-  print('Without asset 91063:');
-//  var p1 = await monthlyBenchmark(month, client,
-//      stackModifier: (Iterable<Map> e) =>
-//          e.where((x) => x['assetId'] != 91063).toList());
+  print(avg);
 }
 
 main() async {
   initializeTimeZoneSync(getLocationTzdb());
 
-  await getStackTest();
+//  await getStackTest();
+//
+//  await monthlyBenchmarkTest();
 
-  await monthlyBenchmarkTest();
+  var aux = parseTerm('Jul17');
+  print(aux);
+  print(aux is Month);
+
 }
