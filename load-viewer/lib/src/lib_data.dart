@@ -25,3 +25,5 @@ Future<TimeSeries> getHourlyRtSystemDemand(Interval interval,
       new Hour.beginning(TZDateTime.parse(_eastern, e['hourBeginning'])),
       e['Total Load'])));
 }
+
+

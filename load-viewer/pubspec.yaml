@@ -2,12 +2,15 @@ name: load_viewer
 description: An absolute bare-bones web app.
 version: 0.0.1
 #homepage: https://www.example.com
-#author: adrian <email@example.com>
+#author: tony <email@example.com>
 
 environment:
   sdk: '>=1.20.1 <2.0.0'
 
 dependencies:
+  dama:
+    git:
+      url: git://github.com/thumbert/dama.git
   date:
     git:
       url: git://github.com/thumbert/date.git
