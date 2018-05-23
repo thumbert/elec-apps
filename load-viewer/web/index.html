@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>load_viewer</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
     <script defer src="main.dart" type="application/dart"></script>
@@ -15,9 +16,26 @@
 </head>
 
 <body>
+    <div class="w3-bar w3-black">
+        <button id="btn-hourly-shape" class="w3-bar-item w3-button">Hourly shape</button>
+        <button id="btn-customer-counts" class="w3-bar-item w3-button">Customer counts</button>
+    </div>
 
-    <div id="chart-hourly-shape"></div>
-    <div id="output"></div>
+
+    <div id="hourly-shape" class="tab">
+        <h2>Historical hourly shape, ISONE</h2>
+        <div id="chart-hourly-shape"></div>
+        <div id="output"></div>
+    </div>
+
+    <div id="customer-counts" class="tab" style="display:none">
+        <h2>Customer counts</h2>
+        <p>Eversource, CT</p>
+        <div id="chart-customer-counts"></div>
+    </div>
+
+
+
 
 
 

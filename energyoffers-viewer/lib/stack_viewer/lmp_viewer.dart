@@ -1,16 +1,16 @@
 library lmp_viewer;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html' as html;
+import 'package:intl/intl.dart';
 import 'package:date/date.dart';
 import 'package:date/src/term_parse.dart';
 import 'package:http/browser_client.dart';
 import 'package:plotly/plotly.dart';
 import 'package:timezone/browser.dart';
-import 'package:google_charts/google_charts.dart' as gvis;
 import 'package:timeseries/timeseries.dart';
 import 'package:elec/src/iso/iso.dart';
+import 'package:elec_server/src/utils/table.dart';
 import 'package:energyoffers_viewer/src/scenario.dart';
 import 'package:energyoffers_viewer/src/stack.dart';
 import 'package:energyoffers_viewer/src/lib_data.dart';
@@ -24,11 +24,11 @@ class LmpViewer {
   Location location;
 
   Scenario baseScenario;
-  gvis.Table table;
-  gvis.DataTable dataTable;
+  List<Map> dataTable;
 
   html.InputElement monthInput;
-
+  html.Element tableWrapper;
+  Map _tableOptions;
 
   LmpViewer() {
     location = getLocation('US/Eastern');
@@ -39,14 +39,17 @@ class LmpViewer {
     client = new BrowserClient();
     layout = _getPlotLayout();
 
-    table = new gvis.Table(html.document.getElementById('price-table'));
-    _makeDataTable();
+    var dollar = new NumberFormat.currency(symbol: '\$');
+    tableWrapper = html.querySelector('#price-table');
+    _tableOptions = {
+      '5x16': {'valueFormat': (num x) => dollar.format(x)},
+      '2x16H': {'valueFormat': (num x) => dollar.format(x)},
+      '7x8': {'valueFormat': (num x) => dollar.format(x)},
+    };
   }
 
   show() async {
     html.querySelector('#output').text = 'Clearing the market ...';
-    int n = dataTable.getNumberOfRows();
-    dataTable.removeRows(0, n);
 
     getHourlyHubPrices(month, client).then((lmpData) {
       //lmpData.take(5).forEach(print);
@@ -58,17 +61,17 @@ class LmpViewer {
       plot = new Plot.id('chart-lmp', [traceLmpActual], layout);
 
       List<num> avg = _monthlyBucketPrice(lmpData);
-      dataTable.addRow([
-        'Historical',
-        {'v': avg[0], 'f': '\$${avg[0].toStringAsFixed(2)}'},
-        {'v': avg[1], 'f': '\$${avg[1].toStringAsFixed(2)}'},
-        {'v': avg[2], 'f': '\$${avg[2].toStringAsFixed(2)}'},
-      ]);
-      table.draw(dataTable, {'showRowNumber': true});
+      dataTable = [];
+      dataTable.add({
+        'Scenario': 'Historical',
+        '5x16': avg[0],
+        '2x16H': avg[1],
+        '7x8': avg[2]
+      });
+      new Table(tableWrapper, dataTable, options: _tableOptions);
     });
 
     estimatePrices();
-
   }
 
   estimatePrices() {
@@ -76,25 +79,27 @@ class LmpViewer {
       baseScenario = _baseScenario;
       var lmpEstimated = baseScenario.calculateClearingPrice();
       Map traceLmpEstimated =
-      _makeTrace(lmpEstimated, other: {'name': 'estimated'});
+          _makeTrace(lmpEstimated, other: {'name': 'estimated'});
       plot.addTrace(traceLmpEstimated);
       html.querySelector('#output').text = '';
 
       TimeSeries lmpData = new TimeSeries.fromIterable(lmpEstimated.map(
-              (Map e) => new IntervalTuple(
+          (Map e) => new IntervalTuple(
               new Hour.beginning(e['hourBeginning']), e['lmp'])));
       List<num> avg = _monthlyBucketPrice(lmpData);
-      dataTable.addRow([
-        'Estimated',
-        {'v': avg[0], 'f': '\$${avg[0].toStringAsFixed(2)}'},
-        {'v': avg[1], 'f': '\$${avg[1].toStringAsFixed(2)}'},
-        {'v': avg[2], 'f': '\$${avg[2].toStringAsFixed(2)}'},
-      ]);
-      table.draw(dataTable, {'showRowNumber': true});
+      dataTable.add({
+            'Scenario': 'Estimated',
+            '5x16': avg[0],
+            '2x16H': avg[1],
+            '7x8': avg[2]
+          });
+      new Table(tableWrapper, dataTable, options: _tableOptions);
 
       addPilgrimTrace();
+      new Table(tableWrapper, dataTable, options: _tableOptions);
 
       addTowanticTrace();
+      new Table(tableWrapper, dataTable, options: _tableOptions);
     });
   }
 
@@ -110,13 +115,12 @@ class LmpViewer {
     TimeSeries lmpData = new TimeSeries.fromIterable(lmp.map((Map e) =>
         new IntervalTuple(new Hour.beginning(e['hourBeginning']), e['lmp'])));
     List<num> avg = _monthlyBucketPrice(lmpData);
-    dataTable.addRow([
-      'Pilgrim out',
-      {'v': avg[0], 'f': '\$${avg[0].toStringAsFixed(2)}'},
-      {'v': avg[1], 'f': '\$${avg[1].toStringAsFixed(2)}'},
-      {'v': avg[2], 'f': '\$${avg[2].toStringAsFixed(2)}'},
-    ]);
-    table.draw(dataTable, {'showRowNumber': true});
+    dataTable.add({
+      'Scenario': 'Pilgrim Out',
+      '5x16': avg[0],
+      '2x16H': avg[1],
+      '7x8': avg[2]
+    });
   }
 
   addTowanticTrace() {
@@ -129,23 +133,14 @@ class LmpViewer {
     plot.addTrace(_makeTrace(lmp, other: {'name': 'Towantic in'}));
 
     TimeSeries lmpData = new TimeSeries.fromIterable(lmp.map((Map e) =>
-    new IntervalTuple(new Hour.beginning(e['hourBeginning']), e['lmp'])));
+        new IntervalTuple(new Hour.beginning(e['hourBeginning']), e['lmp'])));
     List<num> avg = _monthlyBucketPrice(lmpData);
-    dataTable.addRow([
-      'Towantic in',
-      {'v': avg[0], 'f': '\$${avg[0].toStringAsFixed(2)}'},
-      {'v': avg[1], 'f': '\$${avg[1].toStringAsFixed(2)}'},
-      {'v': avg[2], 'f': '\$${avg[2].toStringAsFixed(2)}'},
-    ]);
-    table.draw(dataTable, {'showRowNumber': true});
-  }
-
-  void _makeDataTable() {
-    dataTable = new gvis.DataTable();
-    dataTable.addColumn('string', 'Scenario');
-    dataTable.addColumn('number', '5x16');
-    dataTable.addColumn('number', '2x16H');
-    dataTable.addColumn('number', '7x8');
+    dataTable.add({
+      'Scenario': 'Towantic in',
+      '5x16': avg[0],
+      '2x16H': avg[1],
+      '7x8': avg[2]
+    });
   }
 
   /// return the 5x16, 2x16H, 7x8 prices
@@ -158,14 +153,13 @@ class LmpViewer {
     ];
   }
 
-
   void _onMonthInputChange(e) {
     var aux = parseTerm(monthInput.value);
     month = new Month(aux.start.year, aux.start.month, location: location);
+
     /// redo the analysis
     show();
   }
-
 }
 
 /// each element of data is a Map {'hourBeginning': TZDateTime, 'lmp': num}
@@ -206,5 +200,3 @@ Map _getPlotLayout() {
     'height': 600,
   };
 }
-
-
