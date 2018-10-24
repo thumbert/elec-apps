@@ -20,7 +20,7 @@ Future<TimeSeries> getHourlyRtSystemDemand(Interval interval,
   var url =
       'http://localhost:8080/system_demand/v1/market/rt/start/${start.toString()}/end/${end.toString()}';
   var response = await client.get(url);
-  var aux = JSON.decode(response.body);
+  var aux = json.decode(response.body);
   return new TimeSeries.fromIterable(aux.map((Map e) => new IntervalTuple(
       new Hour.beginning(TZDateTime.parse(_eastern, e['hourBeginning'])),
       e['Total Load'])));

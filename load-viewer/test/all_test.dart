@@ -1,18 +1,18 @@
 
 
-import 'package:http/http.dart';
 import 'package:date/date.dart';
 import 'package:timezone/standalone.dart';
 import 'package:timeseries/timeseries.dart';
-import 'package:elec_server/src/utils/timezone_utils.dart';
-import 'package:elec/src/time/calendar/calendar.dart';
+import 'package:elec/src/time/calendar/calendars/nerc_calendar.dart';
 import 'package:load_viewer/src/lib_data.dart';
 import 'package:load_viewer/lib_shape_analysis.dart';
 import 'package:load_viewer/shape.dart';
 
 getData() async {
   NercCalendar _calendar = new NercCalendar();
-  Interval interval = new Interval(new DateTime(2014,1),  new DateTime(2017,8));
+  var location = getLocation('US/Eastern');
+  var interval = Interval(TZDateTime(location, 2014, 1),
+      TZDateTime(location, 2017, 8));
   var data = await getHourlyRtSystemDemand(interval);
   //data.take(5).forEach(print);
 
@@ -48,7 +48,7 @@ getData() async {
 
 
 main() async {
-  initializeTimeZoneSync(getLocationTzdb());
+  initializeTimeZone();
 
   await getData();
 }

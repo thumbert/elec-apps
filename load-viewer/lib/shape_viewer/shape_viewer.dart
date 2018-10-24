@@ -7,7 +7,7 @@ import 'package:timezone/browser.dart';
 import 'package:plotly/plotly.dart';
 import 'package:timeseries/timeseries.dart';
 import 'package:date/date.dart';
-import 'package:elec/src/time/calendar/calendar.dart';
+import 'package:elec/src/time/calendar/calendars/nerc_calendar.dart';
 import 'package:load_viewer/src/lib_data.dart';
 import 'package:load_viewer/lib_shape_analysis.dart';
 import 'package:load_viewer/shape.dart';
