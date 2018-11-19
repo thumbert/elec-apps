@@ -58,7 +58,7 @@ debugStack() async {
     var url =
         'http://localhost:8080/da_energy_offers/v1/date/20170701/hourending/16';
     var response = await client.get(url);
-    List<Map> aux = JSON.decode(response.body);
+    List<Map> aux = json.decode(response.body);
     //aux.forEach(print);
 
     // aggregate the qty by asset
@@ -88,14 +88,10 @@ monthlyBenchmarkTest() async {
 }
 
 main() async {
-  initializeTimeZoneSync(getLocationTzdb());
+  await initializeTimeZone();
 
 //  await getStackTest();
 //
 //  await monthlyBenchmarkTest();
-
-  var aux = parseTerm('Jul17');
-  print(aux);
-  print(aux is Month);
 
 }

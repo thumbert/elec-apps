@@ -45,7 +45,7 @@ Future<Stack> getStack(Hour hour, Client client) async {
   var url =
       'http://localhost:8080/da_energy_offers/v1/stack/date/${stamp[0]}/hourending/${stamp[1]}';
   var response = await client.get(url);
-  return new Stack.from(JSON.decode(response.body));
+  return new Stack.from(json.decode(response.body));
 }
 
 /// Return the DAM hourly hub LMP price.
@@ -58,7 +58,7 @@ Future<TimeSeries<num>> getHourlyHubPrices(
   var url =
       'http://localhost:8080/dalmp/v1/byrow/lmp/ptid/4000/start/${start.toString()}/end/${end.toString()}';
   var response = await client.get(url);
-  var aux = JSON.decode(response.body);
+  var aux = json.decode(response.body);
   return new TimeSeries.fromIterable(aux.map((Map e) => new IntervalTuple(
       new Hour.beginning(TZDateTime.parse(_eastern, e['hourBeginning'])),
       e['lmp'])));
@@ -75,7 +75,7 @@ Future<TimeSeries> getClearedDemand(Interval interval, Client client) async {
   var url =
       'http://localhost:8080/system_demand/v1/market/da/start/${start.toString()}/end/${end.toString()}';
   var response = await client.get(url);
-  List<Map> aux = JSON.decode(response.body);
+  List<Map> aux = json.decode(response.body);
   var ts = aux
       .map((Map e) => new IntervalTuple(
           new Hour.beginning(TZDateTime.parse(_eastern, e['hourBeginning'])),
@@ -106,7 +106,7 @@ Map monthlyAvgByBucket(TimeSeries x) {
   Nest nest = new Nest()
     ..key((Map e) => e['month'])
     ..key((Map e) => e['bucket'])
-    ..rollup((Iterable x) => _mean(x.map((Map e) => e['value'])));
+    ..rollup((Iterable x) => _mean(x.map((e) => e['value'])));
 
   var monthlyLmp = nest.map(data);
   return monthlyLmp;

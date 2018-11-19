@@ -10,7 +10,7 @@ import 'package:plotly/plotly.dart';
 import 'package:timezone/browser.dart';
 import 'package:timeseries/timeseries.dart';
 import 'package:elec/src/iso/iso.dart';
-import 'package:elec_server/src/utils/table.dart';
+import 'package:elec_server/src/utils/html_table.dart';
 import 'package:energyoffers_viewer/src/scenario.dart';
 import 'package:energyoffers_viewer/src/stack.dart';
 import 'package:energyoffers_viewer/src/lib_data.dart';
@@ -30,7 +30,7 @@ class LmpViewer {
   html.Element tableWrapper;
   Map _tableOptions;
 
-  LmpViewer() {
+  LmpViewer(html.DivElement wrapper) {
     location = getLocation('US/Eastern');
     monthInput = html.querySelector('#month-input');
     monthInput.onChange.listen(_onMonthInputChange);
@@ -68,7 +68,7 @@ class LmpViewer {
         '2x16H': avg[1],
         '7x8': avg[2]
       });
-      new Table(tableWrapper, dataTable, options: _tableOptions);
+      new HtmlTable(tableWrapper, dataTable, options: _tableOptions);
     });
 
     estimatePrices();
@@ -93,13 +93,13 @@ class LmpViewer {
             '2x16H': avg[1],
             '7x8': avg[2]
           });
-      new Table(tableWrapper, dataTable, options: _tableOptions);
+      new HtmlTable(tableWrapper, dataTable, options: _tableOptions);
 
       addPilgrimTrace();
-      new Table(tableWrapper, dataTable, options: _tableOptions);
+      new HtmlTable(tableWrapper, dataTable, options: _tableOptions);
 
       addTowanticTrace();
-      new Table(tableWrapper, dataTable, options: _tableOptions);
+      new HtmlTable(tableWrapper, dataTable, options: _tableOptions);
     });
   }
 

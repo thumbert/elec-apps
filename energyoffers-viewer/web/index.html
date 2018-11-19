@@ -6,10 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
-    <title>energyoffers_viewer</title>
+    <title>Energy Offers Viewer</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico">
-    <script defer type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script defer src="packages/plotly/plotly-latest.min.js"></script>
+    <script defer src="energyoffers_viewer.dart.js"></script>
 </head>
 <style>
 table {
@@ -24,19 +27,27 @@ tr:hover {background-color:#f5f5f5;}
 </style>
 
 <body>
-    <h3>Estimate DAM clearing under different scenarios</h3>
-    <div>
-        Month: <input type="text" id="month-input" value="Jun17">
+    <div class="w3-bar w3-black">
+        <button id="btn-stack-viewer" class="w3-bar-item w3-button">Stack viewer</button>
+        <button id="btn-lmp-estimate" class="w3-bar-item w3-button">Lmp estimate</button>
+        <button id="btn-one-asset" class="w3-bar-item w3-button">One asset</button>
     </div>
 
-    <div><div id="chart-lmp"></div></div>
-    <div><div id="chart-stack"></div></div>
-    <div id="output"></div>
-    <div id="price-table" class="price_table" style="font-size: 15px;"></div>
 
+    <div id="stack-viewer" class="tab-content" style="display:none">
+        <h2>Stack viewer</h2>
+        <div id="wrapper-stack-viewer"></div>
+    </div>
 
-    <script defer src="energyoffers_viewer.dart" type="application/dart"></script>
-    <script defer src="packages/browser/dart.js"></script>
-    <script defer src="packages/plotly/plotly-latest.min.js"></script>
+    <div id="lmp-estimate" class="tab-content" style="display:none">
+        <h2>DAM price estimate</h2>
+        <div id="wrapper-lmp-estimate"></div>
+    </div>
+
+    <div id="one-asset" class="tab-content" style="display:none">
+        <h2>Energy offers for one asset</h2>
+        <div id="wrapper-one-asset"></div>
+    </div>
+
 </body>
 </html>

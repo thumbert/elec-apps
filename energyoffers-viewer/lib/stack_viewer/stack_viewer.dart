@@ -3,6 +3,7 @@ library stack_viewer;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:html';
 import 'package:date/date.dart';
 import 'package:http/browser_client.dart';
 import 'package:plotly/plotly.dart';
@@ -17,7 +18,7 @@ class StackViewer {
   BrowserClient client;
   Location location;
 
-  StackViewer() {
+  StackViewer(DivElement wrapper) {
     location = getLocation('US/Eastern');
     hour = new Hour.beginning(new TZDateTime(location, 2017, 7, 1, 16));
     client = new BrowserClient();
