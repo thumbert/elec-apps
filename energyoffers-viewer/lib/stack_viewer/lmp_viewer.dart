@@ -15,7 +15,7 @@ import 'package:energyoffers_viewer/src/scenario.dart';
 import 'package:energyoffers_viewer/src/stack.dart';
 import 'package:energyoffers_viewer/src/lib_data.dart';
 
-class LmpViewer {
+class LmpViewerApp {
   Month month;
   Map layout;
   List<Map> lmpData;
@@ -30,13 +30,13 @@ class LmpViewer {
   html.Element tableWrapper;
   Map _tableOptions;
 
-  LmpViewer(html.DivElement wrapper) {
+  LmpViewerApp(html.DivElement wrapper, {BrowserClient client}) {
     location = getLocation('US/Eastern');
     monthInput = html.querySelector('#month-input');
     monthInput.onChange.listen(_onMonthInputChange);
 
     month = new Month(2017, 6, location: location);
-    client = new BrowserClient();
+    client ??= BrowserClient();
     layout = _getPlotLayout();
 
     var dollar = new NumberFormat.currency(symbol: '\$');
