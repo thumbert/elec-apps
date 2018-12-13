@@ -1,0 +1,35 @@
+name: cong_viewer
+description: An absolute bare-bones web app.
+version: 0.0.1
+#homepage: https://www.example.com
+#author: thumbert <email@example.com>
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dependencies:
+    date:
+      git:
+        url: git://github.com/thumbert/date.git
+    elec:
+      git:
+        url: git://github.com/thumbert/elec.git
+    elec_server:
+      git:
+        url: git://github.com/thumbert/elec-server.git
+    http: '>=0.11.3 <0.20.0'
+    plotly:
+      git:
+        url: git://github.com/thumbert/plotly.git
+    table:
+      git:
+        url: git://github.com/thumbert/table.git
+    timeseries:
+      git:
+        url: git://github.com/thumbert/timeseries.git
+    timezone: '>=0.5.0-dev-3 <0.9.0'
+
+dev_dependencies:
+  build_runner: ^1.1.2
+  build_web_compilers: ^0.4.0
+  test: '>=1.0.0 <2.0.0'
