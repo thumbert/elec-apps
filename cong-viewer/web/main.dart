@@ -1,9 +1,10 @@
 
 
 import 'dart:html';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:timezone/browser.dart';
-import 'package:cong_viewer/all_nodes/all_nodes_app.dart';
+import 'package:grpc/grpc.dart';
+import 'package:cong_viewer/all_nodes_app/all_nodes_app.dart';
 
 
 void openTab(String tabName) {
@@ -19,7 +20,13 @@ void openTab(String tabName) {
 void main() async {
 
   await initializeTimeZone();
-  var client = Client();
+  var client = http.Client();
+
+  final channel = ClientChannel('localhost',
+      port: 50051,
+      options: const ChannelOptions(
+          credentials: const ChannelCredentials.insecure()));
+
 
   var allNodesApp = AllNodesApp(querySelector('#wrapper-all-nodes'));
   _onClickAllNodesViewer(e) {
