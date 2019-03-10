@@ -8,7 +8,7 @@ import 'package:cong_viewer/all_nodes_app/all_nodes_app.dart';
 
 
 void openTab(String tabName) {
-  List<DivElement> x = document.getElementsByClassName('tab-content');
+  var x = document.getElementsByClassName('tab-content').cast<HtmlElement>();
   for (int i = 0; i < x.length; i++) {
     x[i].style.display = 'none';
   }

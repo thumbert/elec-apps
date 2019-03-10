@@ -2,6 +2,7 @@ library all_nodes_app.lib;
 
 import 'package:date/date.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:timeseries/timeseries.dart' as ts;
 import 'package:elec_server/src/generated/timeseries.pbgrpc.dart';
 import 'package:elec_server/client/isoexpress/dalmp.dart';
 import 'package:elec/src/common_enums.dart' as ce;
@@ -23,11 +24,8 @@ Future<NumericTimeSeries> getSeries(
   return response;
 }
 
-Future<NumericTimeSeries> getDailySeries(Date start, Date end,
+Future<Map<int,ts.TimeSeries<num>>> getDailySeries(Date start, Date end,
     DaLmp client) async {
-
-  var response = await client.getDailyPricesAllNodes(ce.LmpComponent.congestion,
+  return client.getDailyPricesAllNodes(ce.LmpComponent.congestion,
     start, end);
-
-  return response;
 }
