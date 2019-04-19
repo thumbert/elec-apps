@@ -18,7 +18,7 @@ HourlyShape averageShape(Iterable<HourlyShape> shapes) {
     res.add(mean(aux));
   }
 
-  return new HourlyShape(res, level: 1);
+  return HourlyShape(res, level: 1);
 }
 
 

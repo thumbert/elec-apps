@@ -12,7 +12,7 @@ Location _eastern = getLocation('US/Eastern');
 /// Get the RT system demand.  Return an hourly timeseries.
 Future<TimeSeries> getHourlyRtSystemDemand(Interval interval,
     {Client client}) async {
-  client ??= new Client();
+  client ??= Client();
   Date start =
       new Date(interval.start.year, interval.start.month, interval.start.day);
   Date end = new Date(interval.end.year, interval.end.month, interval.end.day)
