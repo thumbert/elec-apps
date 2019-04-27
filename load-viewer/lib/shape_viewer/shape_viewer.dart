@@ -82,7 +82,7 @@ class ShapeViewer {
 
 
   List<Map> _makeTraces(Map<int,HourlyShape> data) {
-    List<Map> traces = [];
+    var traces = <Map>[];
     data.keys.forEach((int year) {
       var trace = {
         'x': new List.generate(24, (i) => i),
