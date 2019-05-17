@@ -85,8 +85,8 @@ class ShapeViewer {
     var traces = <Map>[];
     data.keys.forEach((int year) {
       var trace = {
-        'x': new List.generate(24, (i) => i),
-        'y': data[year].weights,
+        'x': List.generate(24, (i) => i),
+        'y': data[year],
         'text': year,
         'name': year,
         'mode': 'lines',
@@ -96,45 +96,53 @@ class ShapeViewer {
     return traces;
   }
 
-
-  /// Return an hourly time series corresponding to this month for each
-  /// historical year.
   Future<Map<int,HourlyShape>> _getData() async {
     var start = Date(2014, 1, 1);
     var end = Date.today();
-    _ts ??= await api.getSystemDemand(Market.rt, start, end);
-
-    var hs = HourlyShape.fromTimeSeries(_ts);
-
-    var controller = makeController();
-    int month = _mthIndex[controller.filters['month']];
-
-    // filter for the month of interest only
-    var ts = TimeSeries.fromIterable(
-        _ts.where((obs) => obs.interval.start.month == month));
-
-    // calculate the hourly shape by day
-    var shapeByDay = hourlyShapeByDay(ts);
-
-    // keep only the non-holiday weekdays
-    List daysOut = [];
-    shapeByDay.keys.forEach((Date day) {
-      if (day.isWeekend() || _calendar.isHoliday(day))
-        daysOut.add(day);
-    });
-    daysOut.forEach((day) => shapeByDay.remove(day));
 
 
-    // find the average shape of this year/month combination
-    var byYear = groupBy(shapeByDay.keys, (Date day) => day.year);
-    var avgShape = <int,HourlyShape>{};
-    byYear.forEach((year,days) {
-      avgShape[year] = averageShape(days.map((day) => shapeByDay[day]).toList());
-    });
 
-
-    return avgShape;
   }
+
+
+/// Return an hourly time series corresponding to this month for each
+  /// historical year.
+//  Future<Map<int,HourlyShape>> _getData() async {
+//    var start = Date(2014, 1, 1);
+//    var end = Date.today();
+//    _ts ??= await api.getSystemDemand(Market.rt, start, end);
+//
+//    var hs = HourlyShape.fromTimeSeries(_ts);
+//
+//    var controller = makeController();
+//    int month = _mthIndex[controller.filters['month']];
+//
+//    // filter for the month of interest only
+//    var ts = TimeSeries.fromIterable(
+//        _ts.where((obs) => obs.interval.start.month == month));
+//
+//    // calculate the hourly shape by day
+//    var shapeByDay = hourlyShapeByDay(ts);
+//
+//    // keep only the non-holiday weekdays
+//    List daysOut = [];
+//    shapeByDay.keys.forEach((Date day) {
+//      if (day.isWeekend() || _calendar.isHoliday(day))
+//        daysOut.add(day);
+//    });
+//    daysOut.forEach((day) => shapeByDay.remove(day));
+//
+//
+//    // find the average shape of this year/month combination
+//    var byYear = groupBy(shapeByDay.keys, (Date day) => day.year);
+//    var avgShape = <int,HourlyShape>{};
+//    byYear.forEach((year,days) {
+//      avgShape[year] = averageShape(days.map((day) => shapeByDay[day]).toList());
+//    });
+//
+//
+//    return avgShape;
+//  }
 
 }
 
