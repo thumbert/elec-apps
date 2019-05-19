@@ -24,9 +24,6 @@ dependencies:
   plotly:
     git:
       url: git://github.com/thumbert/plotly.git
-  table:
-    git:
-      url: git://github.com/thumbert/table.git
   timeseries:
     git:
       url: git://github.com/thumbert/timeseries.git
