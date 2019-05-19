@@ -95,8 +95,8 @@ class ShapeViewer {
 
   /// Get the weekday hourly weights by year.
   Future<Map<int, Iterable<num>>> _getData() async {
-    var start = Date(2014, 1, 1);
-    var end = Date.today();
+    var start = Date(2014, 1, 1, location: _location);
+    var end = Date(2018, 12, 31, location: _location);
 
     var api = EversourceLoad(client);
     var aux = await api.getCtLoad(start, end);
@@ -104,12 +104,15 @@ class ShapeViewer {
         e.value['SS Total'] + e.value['Competitive Supply'] + e.value['LRS'])));
 
     var hs = hourlyShapeByYearMonthDayType(x);
+    print(hs);
 
     var controller = makeController();
+    print(controller);
 
     var out = Map.fromEntries(hs
-        .where((e) => e.interval.start.month == controller.filters['month'])
+        .where((e) => e.interval.start.month == _mthIndex[controller.filters['month']])
         .map((e) => MapEntry(e.interval.start.year, e.value['Weekday'].weights)));
+    print(out);
 
     return out;
   }
