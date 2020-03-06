@@ -22,7 +22,7 @@ void tests() {
       var controller = Controller()
         ..checkboxes = ['cumulative']
         ..filters['pipeline'] = 'All';
-      var agg = aggregateContracts(data, controller);
+      var agg = aggregateData(data, controller);
       expect(agg.length, 97);
       expect(agg[0]['value'], 5400);
       expect(agg[1]['value'], 10800);
@@ -33,7 +33,7 @@ void tests() {
       var controller = Controller()
         ..checkboxes = ['cumulative', 'pipeline']
         ..filters['pipeline'] = 'All';
-      var agg = aggregateContracts(data, controller);
+      var agg = aggregateData(data, controller);
       expect(agg.length, 97);
       expect(agg[0]['value'], 5400);
       expect(agg[1]['value'], 10800);

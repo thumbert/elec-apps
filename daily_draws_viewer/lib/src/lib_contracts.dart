@@ -15,6 +15,7 @@ class Contract {
   num annualContractQuantity;  // in MMBTU
   Interval interval;
   String pipeline;
+  String utility;
 
   TimeSeries<num> calls;
 
@@ -24,6 +25,7 @@ class Contract {
     annualContractQuantity = x['annualContractQuantity'] ?? ArgumentError('annualDailyQuantity is required');
     interval = parseTerm(x['term']) ?? ArgumentError('term is required');
     pipeline = x['pipeline'];
+    utility = x['utility'];
   }
 }
 
@@ -43,7 +45,7 @@ List<Map<String,dynamic>> expandContracts(List<Contract> contracts) {
 }
 
 /// Deal with the UI aggregation logic.
-List<Map<String,dynamic>> aggregateContracts(List<Map<String,dynamic>> data,
+List<Map<String,dynamic>> aggregateData(List<Map<String,dynamic>> data,
     Controller controller) {
 
   var nest = Nest()
@@ -79,21 +81,24 @@ List<Contract> getContracts() {
       'maxDailyQuantity': 1900,
       'annualContractQuantity': 171000,
       'term': 'Nov19-Mar20',
-      'pipeline': 'A',
+      'pipeline': 'Boom-Boom Express',
+      'utility': 'Pomo Co.',
     },
     {
       'contractId': 2,
       'maxDailyQuantity': 5400,
       'annualContractQuantity': 243000,
       'term': 'Nov19-Mar20',
-      'pipeline': 'A',
+      'pipeline': 'Boom-Boom Express',
+      'utility': 'High Gas',
     },
     {
       'contractId': 3,
       'maxDailyQuantity': 2700,
       'annualContractQuantity': 200000,
       'term': 'Dec19-Feb20',
-      'pipeline': 'B',
+      'pipeline': 'Transco Delight',
+      'utility': 'High Gas',
     },
   ];
   return contracts.map((e) => Contract.fromMap(e)).toList();
