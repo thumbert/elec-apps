@@ -3,6 +3,7 @@ library draws_viewer_app;
 import 'dart:html' as html;
 
 import 'package:daily_draws_viewer/src/lib_contracts.dart';
+import 'package:date/date.dart';
 import 'package:plotly/plotly.dart';
 import 'package:elec_server/ui.dart';
 
@@ -16,7 +17,11 @@ class DrawsViewerApp {
   CheckboxLabel _cumulative;
 
   DrawsViewerApp(this.wrapper) {
+    var asOfDate = Date(2020,2, 5);
     contracts = getContracts();
+    for (var contract in contracts) {
+      contract.calls = simulateCalls(contract, asOfDate);
+    }
     data = expandContracts(contracts);
     _addHtml();
   }
@@ -26,18 +31,21 @@ class DrawsViewerApp {
     var aggData = aggregateData(data, controller);
 
     var traces = <Map<String, dynamic>>[];
-    var x = <String>[];
-    var y = <num>[];
-    for (var ms in aggData) {
-      x.add(ms['date']);
-      y.add(ms['value']);
+    for (var key in aggData.keys) {
+      var x = <String>[];
+      var y = <num>[];
+      for (var date in aggData[key].keys) {
+        x.add(date);
+        y.add(aggData[key][date]);
+      }
+      traces.add({
+        'x': x,
+        'y': y,
+        'mode': 'line',
+        'name': key,
+      });
     }
 
-    var one = {
-      'x': x,
-      'y': y,
-      'mode': 'line',
-    };
 
     Plot.id('chart', traces, _getPlotLayout());
   }

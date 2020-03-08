@@ -8,7 +8,6 @@ import 'package:elec_server/src/ui/controller.dart';
 import 'package:table/table.dart';
 import 'package:timeseries/timeseries.dart';
 
-
 class Contract {
   int contractId;
   num maxDailyQuantity;  // in MMBTU
@@ -36,6 +35,7 @@ List<Map<String,dynamic>> expandContracts(List<Contract> contracts) {
        data.add({
          'contract': contract.contractId,
          'pipeline': contract.pipeline,
+         'utility': contract.utility,
          'date': (obs.interval as Date).toString(),
          'value': obs.value,
        });
@@ -45,27 +45,59 @@ List<Map<String,dynamic>> expandContracts(List<Contract> contracts) {
 }
 
 /// Deal with the UI aggregation logic.
-List<Map<String,dynamic>> aggregateData(List<Map<String,dynamic>> data,
+/// Return timeseries, the key is the aggregation key,
+Map<String,Map<String,num>> aggregateData(List<Map<String,dynamic>> data,
     Controller controller) {
 
-  var nest = Nest()
-    ..key((e) => e['date']);
-  var levelNames = <String>['date'];
+  var nest = Nest();
+  var levelNames = <String>[]; //'date'];
 
   if (controller.filters['pipeline'] != 'All') {
-    data = data.where((e) => e['pipeline'] = controller.filters['pipeline']).toList();
+    data = data.where((e) => e['pipeline'] == controller.filters['pipeline']).toList();
+  }
+  if (controller.filters['utility'] != 'All') {
+    data = data.where((e) => e['utility'] == controller.filters['utility']).toList();
   }
 
+  if (controller.checkboxes.contains('pipeline')) {
+    nest.key((e) => e['pipeline']);
+    levelNames.add('pipeline');
+  }
+  if (controller.checkboxes.contains('utility')) {
+    nest.key((e) => e['utility']);
+    levelNames.add('utility');
+  }
+
+  nest.key((e) => e['date']);
   nest.rollup((Iterable xs) => sum(xs.map((e) => e['value'])));
 
   var aux = nest.map(data);
-  var out = flattenMap(aux, levelNames..add('value'));
+  //var out = flattenMap(aux, [...levelNames, ...['date', 'value']]);
+
+  var out = <String,Map<String,num>>{};
+  if (levelNames.isEmpty) {
+    out[''] = (aux as Map).cast<String,num>();
+  } else if (levelNames.length == 1) {
+    for (var key in aux.keys) {
+      out[key as String] = (aux[key] as Map).cast<String,num>();
+    }
+  } else if (levelNames.length == 2) {
+    for (var pipeline in aux.keys) {
+      for (var utility in aux[pipeline].keys) {
+        out['$pipeline|$utility'] =  (aux[pipeline][utility] as Map).cast<String,num>();
+      }
+    }
+  }
+
+  //var ts = reshape(out, ['date'], levelNames, 'value', fill: 0);
 
   if (controller.checkboxes.contains('cumulative')) {
-    var previous = 0.0;
-    for (var one in out) {
-      one['value'] += previous;
-      previous = one['value'];
+    for (var entry in out.entries) {
+      var previous = 0.0;
+      for (var date in entry.value.keys) {
+        entry.value[date] += previous;
+        previous = entry.value[date];
+      }
     }
   }
 
